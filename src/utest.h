@@ -55,7 +55,7 @@ void test_abort(struct test_context *, const char *, int, const char *, ...)
 char *test_format_data(const char *, size_t);
 
 #define TEST_FUNCTION_NAME(name_) \
-    test_##name_
+    test_case_##name_
 
 #define TEST(name_) \
     static void TEST_FUNCTION_NAME(name_)(struct test_suite *test_suite, \
