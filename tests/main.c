@@ -96,10 +96,14 @@ int
 main(void) {
     struct test_suite *suite;
 
-    suite = test_suite_new("Examples",
-                           test_print_header_terminal,
-                           test_print_results_terminal,
-                           test_report_terminal);
+    suite = test_suite_new("Examples");
+
+    test_suite_set_output(suite, stdout);
+    test_suite_set_header_printer(suite, test_print_header_terminal);
+    test_suite_set_result_printer(suite, test_print_results_terminal);
+    test_suite_set_report_function(suite, test_report_terminal);
+
+    test_suite_start(suite);
 
     TEST_RUN(suite, integers);
     TEST_RUN(suite, integer_failure);

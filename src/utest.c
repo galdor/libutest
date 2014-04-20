@@ -27,6 +27,8 @@
 struct test_suite {
     const char *name;
 
+    FILE *output;
+    test_header_printer header_printer;
     test_result_printer result_printer;
     test_report_function report_function;
 
@@ -43,10 +45,7 @@ struct test_context {
 };
 
 struct test_suite *
-test_suite_new(const char *name,
-               test_header_printer header_printer,
-               test_result_printer result_printer,
-               test_report_function report_function) {
+test_suite_new(const char *name) {
     struct test_suite *suite;
 
     suite = malloc(sizeof(struct test_suite));
@@ -58,11 +57,11 @@ test_suite_new(const char *name,
     memset(suite, 0, sizeof(struct test_suite));
 
     suite->name = name;
-    suite->result_printer = result_printer;
-    suite->report_function = report_function;
 
-    if (header_printer)
-        header_printer(name);
+    suite->output = stdout;
+    suite->header_printer = test_print_header_terminal;
+    suite->result_printer = test_print_results_terminal;
+    suite->report_function = test_report_terminal;
 
     return suite;
 }
@@ -74,6 +73,35 @@ test_suite_delete(struct test_suite *suite) {
 
     memset(suite, 0, sizeof(struct test_suite));
     free(suite);
+}
+
+void
+test_suite_set_output(struct test_suite *suite, FILE *output) {
+    suite->output = output;
+}
+
+void
+test_suite_set_report_function(struct test_suite *suite,
+                               test_report_function function) {
+    suite->report_function = function;
+}
+
+void
+test_suite_set_header_printer(struct test_suite *suite,
+                              test_header_printer function) {
+    suite->header_printer = function;
+}
+
+void
+test_suite_set_result_printer(struct test_suite *suite,
+                              test_result_printer function) {
+    suite->result_printer = function;
+}
+
+void
+test_suite_start(struct test_suite *suite) {
+    if (suite->header_printer)
+        suite->header_printer(suite->output, suite->name);
 }
 
 int
@@ -97,7 +125,7 @@ test_suite_run_test(struct test_suite *suite, const char *test_name,
 
     suite->nb_passed_tests++;
     if (suite->report_function)
-        suite->report_function(test_name, true, NULL, 0, NULL);
+        suite->report_function(suite->output, test_name, true, NULL, 0, NULL);
     return 0;
 }
 
@@ -106,64 +134,68 @@ test_suite_print_results(struct test_suite *suite) {
     if (!suite->result_printer)
         return;
 
-    suite->result_printer(suite->nb_tests,
+    suite->result_printer(suite->output,
+                          suite->nb_tests,
                           suite->nb_passed_tests, suite->nb_failed_tests);
 }
 
 void
-test_report_terminal(const char *test_name, bool success,
+test_report_terminal(FILE *output, const char *test_name, bool success,
                      const char *file, int line, const char *errmsg) {
     if (success) {
-        printf("\e[32m.\e[0m %-20s  \e[32mok\e[0m\n",
-               test_name);
+        fprintf(output, "\e[32m.\e[0m %-20s  \e[32mok\e[0m\n",
+                test_name);
     } else {
-        printf("\e[31mx\e[0m %-20s  %s:%d  \e[31m%s\e[0m\n",
-               test_name, file, line, errmsg);
+        fprintf(output, "\e[31mx\e[0m %-20s  %s:%d  \e[31m%s\e[0m\n",
+                test_name, file, line, errmsg);
     }
 }
 
 void
-test_print_header_terminal(const char *suite_name) {
-    printf("----------------------------------------"
-           "----------------------------------------\n");
-    printf(" %s\n", suite_name);
-    printf("----------------------------------------"
-           "----------------------------------------\n\n");
+test_print_header_terminal(FILE *output, const char *suite_name) {
+    fprintf(output, "----------------------------------------"
+            "----------------------------------------\n");
+    fprintf(output, " %s\n", suite_name);
+    fprintf(output, "----------------------------------------"
+            "----------------------------------------\n\n");
 }
 
 void
-test_print_results_terminal(size_t nb_tests,
+test_print_results_terminal(FILE *output, size_t nb_tests,
                             size_t nb_passed_tests, size_t nb_failed_tests) {
     double ratio_passed, ratio_failed;
 
     ratio_passed = (double)nb_passed_tests / (double)nb_tests;
     ratio_failed = (double)nb_failed_tests / (double)nb_tests;
 
-    putchar('\n');
+    putc('\n', output);
 
-    printf("%-20s  %zu\n", "Tests executed",
-           nb_tests);
-    printf("%-20s  %zu (%.0f%%)\n", "Tests passed",
-           nb_passed_tests, ratio_passed * 100.0);
-    printf("%-20s  %zu (%.0f%%)\n", "Tests failed",
-           nb_failed_tests, ratio_failed * 100.0);
+    fprintf(output, "%-20s  %zu\n", "Tests executed",
+            nb_tests);
+    fprintf(output, "%-20s  %zu (%.0f%%)\n", "Tests passed",
+            nb_passed_tests, ratio_passed * 100.0);
+    fprintf(output, "%-20s  %zu (%.0f%%)\n", "Tests failed",
+            nb_failed_tests, ratio_failed * 100.0);
 
-    putchar('\n');
+    putc('\n', output);
 }
 
 void
 test_abort(struct test_context *ctx, const char *file, int line,
            const char *fmt, ...) {
+    struct test_suite *suite;
     char errmsg[TEST_ERROR_BUFSZ];
     va_list ap;
 
-    if (ctx->test_suite->report_function) {
+    suite = ctx->test_suite;
+
+    if (suite->report_function) {
         va_start(ap, fmt);
         vsnprintf(errmsg, TEST_ERROR_BUFSZ, fmt, ap);
         va_end(ap);
 
-        ctx->test_suite->report_function(ctx->test_name, false,
-                                         file, line, errmsg);
+        suite->report_function(suite->output, ctx->test_name, false,
+                               file, line, errmsg);
     }
 
     longjmp(ctx->before, -1);

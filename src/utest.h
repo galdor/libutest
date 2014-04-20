@@ -27,22 +27,27 @@ struct test_suite;
 struct test_context;
 
 typedef void (*test_function)(struct test_suite *, struct test_context *);
-typedef void (*test_report_function)(const char *, bool,
+typedef void (*test_report_function)(FILE *, const char *, bool,
                                      const char *, int, const char *);
-typedef void (*test_header_printer)(const char *);
-typedef void (*test_result_printer)(size_t, size_t, size_t);
+typedef void (*test_header_printer)(FILE *, const char *);
+typedef void (*test_result_printer)(FILE *, size_t, size_t, size_t);
 
-struct test_suite *test_suite_new(const char *,
-                                  test_header_printer,
-                                  test_result_printer,
-                                  test_report_function);
+struct test_suite *test_suite_new(const char *);
 void test_suite_delete(struct test_suite *);
+
+void test_suite_set_output(struct test_suite *, FILE *);
+void test_suite_set_report_function(struct test_suite *, test_report_function);
+void test_suite_set_header_printer(struct test_suite *, test_header_printer);
+void test_suite_set_result_printer(struct test_suite *, test_result_printer);
+
+void test_suite_start(struct test_suite *);
 int test_suite_run_test(struct test_suite *, const char *, test_function);
 void test_suite_print_results(struct test_suite *);
 
-void test_report_terminal(const char *, bool, const char *, int, const char *);
-void test_print_header_terminal(const char *);
-void test_print_results_terminal(size_t, size_t, size_t);
+void test_report_terminal(FILE *, const char *, bool,
+                          const char *, int, const char *);
+void test_print_header_terminal(FILE *, const char *);
+void test_print_results_terminal(FILE *, size_t, size_t, size_t);
 
 void test_abort(struct test_context *, const char *, int, const char *, ...)
     __attribute__((format(printf, 4, 5)));
