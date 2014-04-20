@@ -20,9 +20,16 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <unistd.h>
+
 #include "utest.h"
 
 #define TEST_ERROR_BUFSZ 1024
+
+static void test_usage(const char *, int)
+    __attribute__ ((noreturn));
+static void test_die(const char *, ...)
+    __attribute__ ((format(printf, 1, 2), noreturn));
 
 struct test_suite {
     const char *name;
@@ -71,8 +78,68 @@ test_suite_delete(struct test_suite *suite) {
     if (!suite)
         return;
 
+    fclose(suite->output);
+
     memset(suite, 0, sizeof(struct test_suite));
     free(suite);
+}
+
+void
+test_suite_initialize_from_args(struct test_suite *suite,
+                                int argc, char **argv) {
+    const char *output_path;
+    const char *format;
+    FILE *output;
+    int opt;
+
+    output_path = "-";
+    format = "terminal";
+
+    opterr = 0;
+    while ((opt = getopt(argc, argv, "f:ho:")) != -1) {
+        switch (opt) {
+        case 'f':
+            format = optarg;
+            break;
+
+        case 'h':
+            test_usage(argv[0], 0);
+            break;
+
+        case 'o':
+            output_path = optarg;
+            break;
+
+        case '?':
+            test_usage(argv[0], 1);
+        }
+    }
+
+    /* Output */
+    if (strcmp(output_path, "-") == 0) {
+        output = stdout;
+    } else {
+        output = fopen(output_path, "w");
+        if (!output) {
+            test_die("cannot open file %s: %s",
+                     output_path, strerror(errno));
+        }
+    }
+
+    test_suite_set_output(suite, output);
+
+    /* Format */
+    if (strcmp(format, "terminal") == 0) {
+        test_suite_set_header_printer(suite, test_print_header_terminal);
+        test_suite_set_result_printer(suite, test_print_results_terminal);
+        test_suite_set_report_function(suite, test_report_terminal);
+    } else if (strcmp(format, "json") == 0) {
+        test_suite_set_header_printer(suite, test_print_header_json);
+        test_suite_set_result_printer(suite, test_print_results_json);
+        test_suite_set_report_function(suite, test_report_json);
+    } else {
+        test_die("unknown format '%s'", format);
+    }
 }
 
 void
@@ -221,4 +288,34 @@ test_format_data(const char *data, size_t sz) {
 overflow:
     fprintf(stderr, "data too large for buffer\n");
     abort();
+}
+
+static void
+test_usage(const char *argv0, int exit_code) {
+    printf("Usage: %s [-hop]\n"
+            "\n"
+            "Options:\n"
+            "  -h            display help\n"
+            "  -f <format>   select the format used for output\n"
+            "  -o <filename> print output to a file\n"
+            "\n"
+            "Formats:\n"
+            "  terminal      human-readable text for ansi terminals\n"
+            "  json          rfc 4627 format\n",
+            argv0);
+    exit(exit_code);
+}
+
+static void
+test_die(const char *fmt, ...) {
+    va_list ap;
+
+    fprintf(stderr, "fatal error: ");
+
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
+
+    putc('\n', stderr);
+    exit(1);
 }

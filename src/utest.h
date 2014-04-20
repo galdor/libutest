@@ -35,6 +35,8 @@ typedef void (*test_result_printer)(FILE *, size_t, size_t, size_t);
 struct test_suite *test_suite_new(const char *);
 void test_suite_delete(struct test_suite *);
 
+void test_suite_initialize_from_args(struct test_suite *, int, char **);
+
 void test_suite_set_output(struct test_suite *, FILE *);
 void test_suite_set_report_function(struct test_suite *, test_report_function);
 void test_suite_set_header_printer(struct test_suite *, test_header_printer);

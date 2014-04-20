@@ -93,15 +93,11 @@ TEST(pointer_failure_3) {
 }
 
 int
-main(void) {
+main(int argc, char **argv) {
     struct test_suite *suite;
 
     suite = test_suite_new("main");
-
-    test_suite_set_output(suite, stdout);
-    test_suite_set_header_printer(suite, test_print_header_terminal);
-    test_suite_set_result_printer(suite, test_print_results_terminal);
-    test_suite_set_report_function(suite, test_report_terminal);
+    test_suite_initialize_from_args(suite, argc, argv);
 
     test_suite_start(suite);
 
