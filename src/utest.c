@@ -140,47 +140,6 @@ test_suite_print_results(struct test_suite *suite) {
 }
 
 void
-test_report_terminal(FILE *output, const char *test_name, bool success,
-                     const char *file, int line, const char *errmsg) {
-    if (success) {
-        fprintf(output, "\e[32m.\e[0m %-20s  \e[32mok\e[0m\n",
-                test_name);
-    } else {
-        fprintf(output, "\e[31mx\e[0m %-20s  %s:%d  \e[31m%s\e[0m\n",
-                test_name, file, line, errmsg);
-    }
-}
-
-void
-test_print_header_terminal(FILE *output, const char *suite_name) {
-    fprintf(output, "----------------------------------------"
-            "----------------------------------------\n");
-    fprintf(output, " %s\n", suite_name);
-    fprintf(output, "----------------------------------------"
-            "----------------------------------------\n\n");
-}
-
-void
-test_print_results_terminal(FILE *output, size_t nb_tests,
-                            size_t nb_passed_tests, size_t nb_failed_tests) {
-    double ratio_passed, ratio_failed;
-
-    ratio_passed = (double)nb_passed_tests / (double)nb_tests;
-    ratio_failed = (double)nb_failed_tests / (double)nb_tests;
-
-    putc('\n', output);
-
-    fprintf(output, "%-20s  %zu\n", "Tests executed",
-            nb_tests);
-    fprintf(output, "%-20s  %zu (%.0f%%)\n", "Tests passed",
-            nb_passed_tests, ratio_passed * 100.0);
-    fprintf(output, "%-20s  %zu (%.0f%%)\n", "Tests failed",
-            nb_failed_tests, ratio_failed * 100.0);
-
-    putc('\n', output);
-}
-
-void
 test_abort(struct test_context *ctx, const char *file, int line,
            const char *fmt, ...) {
     struct test_suite *suite;

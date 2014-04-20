@@ -49,6 +49,11 @@ void test_report_terminal(FILE *, const char *, bool,
 void test_print_header_terminal(FILE *, const char *);
 void test_print_results_terminal(FILE *, size_t, size_t, size_t);
 
+void test_report_json(FILE *, const char *, bool,
+                      const char *, int, const char *);
+void test_print_header_json(FILE *, const char *);
+void test_print_results_json(FILE *, size_t, size_t, size_t);
+
 void test_abort(struct test_context *, const char *, int, const char *, ...)
     __attribute__((format(printf, 4, 5)));
 

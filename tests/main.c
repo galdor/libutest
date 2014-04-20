@@ -96,7 +96,7 @@ int
 main(void) {
     struct test_suite *suite;
 
-    suite = test_suite_new("Examples");
+    suite = test_suite_new("main");
 
     test_suite_set_output(suite, stdout);
     test_suite_set_header_printer(suite, test_print_header_terminal);
