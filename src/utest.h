@@ -196,7 +196,7 @@ char *test_format_data(const char *, size_t);
                            "%zu bytes long",                             \
                            value_str_, value_sz__, expected_sz__);       \
             }                                                            \
-            if (strcmp(value__, expected__) != 0) {                      \
+            if (memcmp(value__, expected__, value_sz__) != 0) {          \
                 TEST_ABORT("%s contains \"%s\" "                         \
                            "but should contain \"%s\"",                  \
                            value_str_,                                   \
