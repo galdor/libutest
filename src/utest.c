@@ -242,14 +242,7 @@ test_format_data(const char *data, size_t sz) {
 
         c = data[i];
 
-        if (isprint((unsigned char)c)) {
-            if (olen >= sizeof(buf) - 1)
-                goto overflow;
-
-            *optr++ = data[i];
-
-            olen += 1;
-        } else if (c == '"' || c == '\r' || c == '\n' || c == '\t') {
+        if (c == '"' || c == '\r' || c == '\n' || c == '\t') {
             if (olen >= sizeof(buf) - 2)
                 goto overflow;
 
@@ -266,6 +259,13 @@ test_format_data(const char *data, size_t sz) {
             }
 
             olen += 2;
+        } else if (isprint((unsigned char)c)) {
+            if (olen >= sizeof(buf) - 1)
+                goto overflow;
+
+            *optr++ = data[i];
+
+            olen += 1;
         } else {
             char tmp[5];
 
