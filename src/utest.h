@@ -79,6 +79,22 @@ char *test_format_data(const char *, size_t);
 #define TEST_ABORT(fmt_, ...) \
     test_abort(test_context, __FILE__, __LINE__, fmt_, ##__VA_ARGS__)
 
+#define TEST_TRUE(value_)                                 \
+    do {                                                  \
+        const char *value_str_ = #value_;                 \
+                                                          \
+        if (!value_)                                      \
+            TEST_ABORT("%s is not true", value_str_);     \
+    } while(0)
+
+#define TEST_FALSE(value_)                                \
+    do {                                                  \
+        const char *value_str_ = #value_;                 \
+                                                          \
+        if (value_)                                       \
+            TEST_ABORT("%s is not false", value_str_);    \
+    } while(0)
+
 #define TEST_INT_EQ(value_, expected_)                    \
     do {                                                  \
         int64_t value__ = value_;                         \

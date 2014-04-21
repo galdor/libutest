@@ -18,6 +18,16 @@
 
 #include "utest.h"
 
+TEST(true_false) {
+    TEST_TRUE(true);
+    TEST_FALSE(false);
+}
+
+TEST(true_false_failure) {
+    TEST_TRUE(false);
+}
+
+
 TEST(integers) {
     TEST_INT_EQ(-1, -1);
     TEST_UINT_EQ(1, 1);
@@ -110,6 +120,9 @@ main(int argc, char **argv) {
     test_suite_initialize_from_args(suite, argc, argv);
 
     test_suite_start(suite);
+
+    TEST_RUN(suite, true_false);
+    TEST_RUN(suite, true_false_failure);
 
     TEST_RUN(suite, integers);
     TEST_RUN(suite, integer_failure);
