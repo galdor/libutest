@@ -49,13 +49,11 @@ test_print_results_terminal(FILE *output, size_t nb_tests,
 
     putc('\n', output);
 
-    fprintf(output, "%-20s  %zu\n", "Tests executed",
+    fprintf(output, "%-16s  %zu\n", "Tests executed:",
             nb_tests);
-    fprintf(output, "%-20s  %zu (%.0f%%)\n", "Tests passed",
+    fprintf(output, "%-16s  %zu (%.0f%%)\n", "Tests passed:",
             nb_passed_tests, ratio_passed * 100.0);
-    fprintf(output, "%-20s  %zu (%.0f%%)\n", "Tests failed",
+    fprintf(output, "%-16s  %zu (%.0f%%)\n", "Tests failed:",
             nb_failed_tests, ratio_failed * 100.0);
-
-    putc('\n', output);
 }
 
