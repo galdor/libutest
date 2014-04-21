@@ -22,10 +22,10 @@ void
 test_report_terminal(FILE *output, const char *test_name, bool success,
                      const char *file, int line, const char *errmsg) {
     if (success) {
-        fprintf(output, "\e[32m.\e[0m %-20s  \e[32mok\e[0m\n",
+        fprintf(output, "\e[32m.\e[0m %-24s  \e[32mok\e[0m\n",
                 test_name);
     } else {
-        fprintf(output, "\e[31mx\e[0m %-20s  %s:%d  \e[31m%s\e[0m\n",
+        fprintf(output, "\e[31mx\e[0m %-24s  %s:%d  \e[31m%s\e[0m\n",
                 test_name, file, line, errmsg);
     }
 }
