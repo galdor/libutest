@@ -123,7 +123,5 @@ main(int argc, char **argv) {
     TEST_RUN(suite, pointer_failure_2);
     TEST_RUN(suite, pointer_failure_3);
 
-    test_suite_print_results(suite);
-    test_suite_delete(suite);
-    return 0;
+    test_suite_print_results_and_exit(suite);
 }

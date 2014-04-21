@@ -45,7 +45,10 @@ void test_suite_set_result_printer(struct test_suite *, test_result_printer);
 
 void test_suite_start(struct test_suite *);
 int test_suite_run_test(struct test_suite *, const char *, test_function);
-void test_suite_print_results(struct test_suite *);
+bool test_suite_passed(const struct test_suite *);
+void test_suite_print_results(const struct test_suite *);
+void test_suite_print_results_and_exit(struct test_suite *)
+    __attribute__((noreturn));
 
 void test_report_terminal(FILE *, const char *, bool,
                           const char *, int, const char *);

@@ -196,14 +196,30 @@ test_suite_run_test(struct test_suite *suite, const char *test_name,
     return 0;
 }
 
+bool
+test_suite_passed(const struct test_suite *suite) {
+    return suite->nb_passed_tests == suite->nb_tests;
+}
+
 void
-test_suite_print_results(struct test_suite *suite) {
+test_suite_print_results(const struct test_suite *suite) {
     if (!suite->result_printer)
         return;
 
     suite->result_printer(suite->output,
                           suite->nb_tests,
                           suite->nb_passed_tests, suite->nb_failed_tests);
+}
+
+void
+test_suite_print_results_and_exit(struct test_suite *suite) {
+    int exit_code;
+
+    test_suite_print_results(suite);
+    exit_code = test_suite_passed(suite) ? 0 : 1;
+    test_suite_delete(suite);
+
+    exit(exit_code);
 }
 
 void
