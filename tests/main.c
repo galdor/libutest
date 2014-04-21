@@ -28,6 +28,16 @@ TEST(integer_failure) {
 }
 
 
+TEST(reals) {
+    TEST_FLOAT_EQ(1.42f, 1.42f);
+    TEST_DOUBLE_EQ(-1.42e5, -1.42e5);
+}
+
+TEST(real_failure) {
+    TEST_DOUBLE_EQ(1.01, 1.02);
+}
+
+
 TEST(booleans) {
     TEST_BOOL_EQ(true, true);
     TEST_BOOL_EQ(false, false);
@@ -103,6 +113,9 @@ main(int argc, char **argv) {
 
     TEST_RUN(suite, integers);
     TEST_RUN(suite, integer_failure);
+
+    TEST_RUN(suite, reals);
+    TEST_RUN(suite, real_failure);
 
     TEST_RUN(suite, booleans);
     TEST_RUN(suite, boolean_failure);

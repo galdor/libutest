@@ -105,6 +105,32 @@ char *test_format_data(const char *, size_t);
         }                                                 \
     } while(0)
 
+#define TEST_FLOAT_EQ(value_, expected_)                  \
+    do {                                                  \
+        float value__ = value_;                           \
+        float expected__ = expected_;                     \
+        const char *value_str_ = #value_;                 \
+                                                          \
+        if (value__ != expected__) {                      \
+            TEST_ABORT("%s is equal to %.9g "             \
+                       "but should be equal to %.9g",     \
+                       value_str_, value__, expected__);  \
+        }                                                 \
+    } while(0)
+
+#define TEST_DOUBLE_EQ(value_, expected_)                 \
+    do {                                                  \
+        double value__ = value_;                          \
+        double expected__ = expected_;                    \
+        const char *value_str_ = #value_;                 \
+                                                          \
+        if (value__ != expected__) {                      \
+            TEST_ABORT("%s is equal to %.17g "            \
+                       "but should be equal to %.17g",    \
+                       value_str_, value__, expected__);  \
+        }                                                 \
+    } while(0)
+
 #define TEST_BOOL_EQ(value_, expected_)                   \
     do {                                                  \
         bool value__ = value_;                            \
