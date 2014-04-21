@@ -235,4 +235,20 @@ char *test_format_data(const char *, size_t);
         }                                                      \
     } while(0)
 
+#define TEST_PTR_NULL(value_)                             \
+    do {                                                  \
+        const char *value_str_ = #value_;                 \
+                                                          \
+        if (value_)                                       \
+            TEST_ABORT("%s is not null", value_str_);     \
+    } while(0)
+
+#define TEST_PTR_NOT_NULL(value_)                         \
+    do {                                                  \
+        const char *value_str_ = #value_;                 \
+                                                          \
+        if (!value_)                                      \
+            TEST_ABORT("%s is null", value_str_);         \
+    } while(0)
+
 #endif

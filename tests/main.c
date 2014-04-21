@@ -98,6 +98,8 @@ TEST(memory_failure_4) {
 
 TEST(pointers) {
     TEST_PTR_EQ(printf, printf);
+    TEST_PTR_NULL(NULL);
+    TEST_PTR_NOT_NULL(printf);
 }
 
 TEST(pointer_failure_1) {
@@ -110,6 +112,14 @@ TEST(pointer_failure_2) {
 
 TEST(pointer_failure_3) {
     TEST_PTR_EQ(NULL, scanf);
+}
+
+TEST(pointer_failure_4) {
+    TEST_PTR_NULL(printf);
+}
+
+TEST(pointer_failure_5) {
+    TEST_PTR_NOT_NULL(NULL);
 }
 
 int
@@ -148,6 +158,8 @@ main(int argc, char **argv) {
     TEST_RUN(suite, pointer_failure_1);
     TEST_RUN(suite, pointer_failure_2);
     TEST_RUN(suite, pointer_failure_3);
+    TEST_RUN(suite, pointer_failure_4);
+    TEST_RUN(suite, pointer_failure_5);
 
     test_suite_print_results_and_exit(suite);
 }
