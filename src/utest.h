@@ -83,7 +83,7 @@ char *test_format_data(const char *, size_t);
     do {                                                  \
         const char *value_str_ = #value_;                 \
                                                           \
-        if (!value_)                                      \
+        if (!(value_))                                    \
             TEST_ABORT("%s is not true", value_str_);     \
     } while(0)
 
