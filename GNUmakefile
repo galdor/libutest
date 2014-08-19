@@ -83,6 +83,6 @@ uninstall:
 
 tags:
 	$(RM) -f .tags
-	ctags -o .tags -a $(wildcard libutest/*.[hc])
+	ctags -o .tags -a $(wildcard src/*.[hc])
 
 .PHONY: all clean install lib uninstall tags
