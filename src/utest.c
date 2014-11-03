@@ -299,7 +299,7 @@ test_format_data(const char *data, size_t sz) {
     }
 
     *optr = '\0';
-    return buf;
+    return strdup(buf);
 
 overflow:
     fprintf(stderr, "data too large for buffer\n");
