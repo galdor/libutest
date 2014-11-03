@@ -184,9 +184,9 @@ char *test_format_data(const char *, size_t);
 
 #define TEST_MEM_EQ(value_, value_sz_, expected_, expected_sz_)          \
     do {                                                                 \
-        const char *value__ = value_;                                    \
+        const char *value__ = (const char *)(value_);              \
         size_t value_sz__ = value_sz_;                                   \
-        const char *expected__ = expected_;                              \
+        const char *expected__ = (const char *)(expected_);        \
         size_t expected_sz__ = expected_sz_;                             \
         const char *value_str_ = #value_;                                \
                                                                          \
