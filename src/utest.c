@@ -288,7 +288,7 @@ test_format_data(const char *data, size_t sz) {
             if (olen >= sizeof(buf) - 4)
                 goto overflow;
 
-            snprintf(tmp, sizeof(tmp), "\\%03hhu", (unsigned char)data[i]);
+            snprintf(tmp, sizeof(tmp), "\\x%02x", (unsigned char)data[i]);
 
             *optr++ = tmp[0];
             *optr++ = tmp[1];
