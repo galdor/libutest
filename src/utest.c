@@ -309,7 +309,7 @@ overflow:
 
 static void
 test_usage(const char *argv0, int exit_code) {
-    printf("Usage: %s [-hop]\n"
+    printf("Usage: %s [-hfo]\n"
             "\n"
             "Options:\n"
             "  -h            display help\n"
