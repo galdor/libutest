@@ -42,11 +42,21 @@ test_report_terminal(FILE *output, const char *test_name, bool success,
 
 void
 test_print_header_terminal(FILE *output, const char *suite_name) {
-    fprintf(output, "----------------------------------------"
-            "----------------------------------------\n");
-    fprintf(output, " %s\n", suite_name);
-    fprintf(output, "----------------------------------------"
-            "----------------------------------------\n\n");
+    size_t width;
+
+    fprintf(output, "-- %s ", suite_name);
+
+    width = 78;
+    if (strlen(suite_name) < 74) {
+        size_t rest;
+
+        rest = width - 3 - strlen(suite_name) - 1;
+
+        for (size_t i = 0; i < rest; i++)
+            fputc('-', output);
+    }
+
+    fputc('\n', output);
 }
 
 void
