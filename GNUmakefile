@@ -3,13 +3,14 @@ prefix= /usr/local
 libdir= $(prefix)/lib
 incdir= $(prefix)/include
 
-CC=   clang
+CC= clang
 
+CFLAGS+= $(cflags)
 CFLAGS+= -std=c99
 CFLAGS+= -Wall -Wextra -Werror -Wsign-conversion
 CFLAGS+= -Wno-unused-parameter -Wno-unused-function
 
-LDFLAGS=
+LDFLAGS+= $(ldflags)
 
 PANDOC_OPTS= -s --toc --email-obfuscation=none
 
@@ -36,14 +37,11 @@ libutest_PUBINC= src/utest.h
 libutest_INC= $(wildcard src/*.h)
 libutest_OBJ= $(subst .c,.o,$(libutest_SRC))
 
-$(libutest_LIB): CFLAGS+=
-
 # Target: tests
 tests_SRC= $(wildcard tests/*.c)
 tests_OBJ= $(subst .c,.o,$(tests_SRC))
 tests_BIN= $(subst .o,,$(tests_OBJ))
 
-$(tests_BIN): CFLAGS+= -Isrc
 $(tests_BIN): LDFLAGS+= -L.
 $(tests_BIN): LDLIBS+= -lutest
 

@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-#include "utest.h"
+#include "../src/utest.h"
 
 TEST(true_false) {
     TEST_TRUE(true);
